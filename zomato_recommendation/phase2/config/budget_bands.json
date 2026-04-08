@@ -1,0 +1,8 @@
+{
+  "_comment": "cost_for_two in INR (Zomato-style). Tune without code changes (architecture §4.3).",
+  "bands": {
+    "low": { "min": 0, "max": 500 },
+    "medium": { "min": 500, "max": 1500 },
+    "high": { "min": 1500, "max": 1000000 }
+  }
+}

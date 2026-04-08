@@ -1,0 +1,8 @@
+# Application tuning (see doc/improvements.md)
+filter:
+  # Max rows passed to the LLM after Phase 2 (shortlist cap).
+  max_shortlist_candidates: 40
+
+recommendations:
+  # How many items the LLM returns in the final ranked list (user no longer sets this in UI).
+  top_n: 5
