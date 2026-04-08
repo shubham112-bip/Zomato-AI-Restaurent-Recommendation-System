@@ -9,6 +9,12 @@ import { RecommendationCard } from "./RecommendationCard";
 const QUICK_TAGS = ["Italian", "Spicy", "Dessert", "Near Me"];
 
 export function RecommendationApp() {
+  const streamlitUrl = (process.env.NEXT_PUBLIC_STREAMLIT_URL || "").trim();
+  const useStreamlitEmbed = streamlitUrl.length > 0;
+  const streamlitEmbedUrl = useStreamlitEmbed
+    ? `${streamlitUrl}${streamlitUrl.includes("?") ? "&" : "?"}embed=true`
+    : "";
+
   const [datasetReady, setDatasetReady] = useState(true);
   const [locations, setLocations] = useState<string[]>([]);
   const [cuisineList, setCuisineList] = useState<string[]>([]);
@@ -26,6 +32,7 @@ export function RecommendationApp() {
   const [result, setResult] = useState<RecommendationResponse | null>(null);
 
   useEffect(() => {
+    if (useStreamlitEmbed) return;
     let cancelled = false;
 
     async function load() {
@@ -55,9 +62,10 @@ export function RecommendationApp() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [useStreamlitEmbed]);
 
   useEffect(() => {
+    if (useStreamlitEmbed) return;
     if (datasetReady) return;
     const id = setInterval(async () => {
       try {
@@ -78,7 +86,7 @@ export function RecommendationApp() {
       }
     }, 3000);
     return () => clearInterval(id);
-  }, [datasetReady]);
+  }, [datasetReady, useStreamlitEmbed]);
 
   const applyTag = (tag: string) => {
     if (tag === "Near Me") {
@@ -147,6 +155,35 @@ export function RecommendationApp() {
   };
 
   const recs: RestaurantRecommendation[] = result?.recommendations ?? [];
+
+  if (useStreamlitEmbed) {
+    return (
+      <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+        <div className="mb-4 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+          <h2 className="text-lg font-semibold text-[#1C1C1C]">Recommendation Engine (Streamlit Backend)</h2>
+          <p className="mt-1 text-sm text-[#696969]">
+            This Vercel frontend is integrated with your deployed Streamlit backend.
+          </p>
+          <a
+            href={streamlitUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-block rounded-lg bg-[#E23744] px-4 py-2 text-sm font-semibold text-white hover:bg-[#c42e3a]"
+          >
+            Open in new tab
+          </a>
+        </div>
+        <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow">
+          <iframe
+            src={streamlitEmbedUrl}
+            title="Streamlit recommendation backend"
+            className="h-[80vh] w-full"
+            loading="lazy"
+          />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <>

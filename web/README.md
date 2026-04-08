@@ -38,6 +38,16 @@ npm start
 
 Set `BACKEND_URL` to your deployed API host when building.
 
+## Vercel + Streamlit deployment mode
+
+If you want backend on Streamlit and frontend on Vercel (without a separate FastAPI host), set:
+
+```bash
+NEXT_PUBLIC_STREAMLIT_URL=https://your-app-name.streamlit.app
+```
+
+In this mode, the Next.js frontend embeds the Streamlit app directly and skips API-route calls.
+
 ## Assets
 
 - `public/hero-bg.png` — hero background (from `design/Screenshot 2026-04-05 145536.png`). Replace to change the hero look.
